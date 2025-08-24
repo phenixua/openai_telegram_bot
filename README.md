@@ -1,67 +1,113 @@
+OpenAI Telegram Bot
+
+Бот на Python для Telegram з інтеграцією OpenAI GPT. Підтримує:
+
+Квізи
+
+GPT-чат
+
+Розмови з відомими особистостями
+
+Рекомендації (фільми, книги, музика)
+
+Переклад тексту
 
 
+📂 Структура проекту
 
+openai_telegram_bot/
+├── src/
+│   ├── bot.py
+│   ├── config.py
+│   ├── openapi_client.py
+│   ├── utils.py
+│   ├── .env.py
+│   ├── bot.log
+│   ├── handlers/
+│   │   ├── __init__.py
+│   │   ├── callback_handler.py
+│   │   ├── gpt_handler.py
+│   │   ├── menu_handler.py
+│   │   ├── quiz_handler.py
+│   │   ├── random_handler.py
+│   │   ├── recommend_handler.py
+│   │   ├── start_handler.py
+│   │   ├── talk_handler.py
+│   │   ├── text_handler.py
+│   │   └── translate_handler.py
+│   ├── logs/
+│   │   └── bot.log
+│   └── resources/
+│       ├── images/
+│       │   └── *.jpg
+│       ├── messages/
+│       │   └── *.txt
+│       └── prompts/
+│           └── *.txt
+├── .env
+├── .env.example
+├── .gitignore
+├── pyproject.toml
+├── poetry.lock
+└── README.md
 
+🌱 Встановлення
 
+1. Клонувати репозиторій:
 
+git clone <your-repo-url>
+cd openai_telegram_bot
 
+2. Створити віртуальне середовище:
 
-src/
-│── bot.py             
-│── handlers/
-│   │── __init__.py
-│   │── start_handler.py
-│   │── random_handler.py
-│   │── gpt_handler.py
-│   │── talk_handler.py
-│   │── quiz_handler.py
-│   │── recommend_handler.py
-│   │── translate_handler.py
-│   │── callback_handler.py
-│   │── text_handler.py
-│── utils.py
-│── config.py
-│── openapi_client.py
+python -m venv venv
+source venv/bin/activate   # Linux/macOS
+venv\Scripts\activate      # Windows
 
+3. Встановити залежності через Poetry або pip:
 
+poetry install
+# або
+pip install -r requirements.txt
 
-project/
-|-resources/
-        │── bot.py
-        │── config.py
-        │── openapi_client.py
-        │── utils.py
-│── handlers/
-│     ├── __init__.py   
-│     ├── menu_handler.py
-│     ├── chat_handler.py
-│     ├── talk_handler.py
-│     ├── translate_handler.py
-│     └── image_handler.py
+4. Створити файл .env (можна скопіювати .env.example) і додати ключі:
 
+TG_BOT_API_KEY=your_telegram_token
+OPENAI_API_KEY=your_openai_key
 
-[]()
-[src](src)
-[handlers](src/handlers)
-[__init__.py](src/handlers/__init__.py)
-[gpt_handler.py](src/handlers/gpt_handler.py)
-[image_handler.py](src/handlers/image_handler.py)
-[menu_handler.py](src/handlers/menu_handler.py)
-[random_handler.py](src/handlers/random_handler.py)
-[start_handler.py](src/handlers/start_handler.py)
-[talk_handler.py](src/handlers/talk_handler.py)
-[translate_handler.py](src/handlers/translate_handler.py)
-[logs](src/logs)
-[resources](src/resources)
-[.env.py](src/.env.py)
-[bot.log](src/bot.log)
-[bot.py](src/bot.py)
-[config.py](src/config.py)
-[openapi_client.py](src/openapi_client.py)
-[utils.py](src/utils.py)
-[.env](.env)
-[.env.example](.env.example)
-[.gitignore](.gitignore)
-[poetry.lock](poetry.lock)
-[pyproject.toml](pyproject.toml)
-[README.md](README.md)
+5. 🚀 Запуск бота
+
+cd src
+python bot.py
+
+Бот запуститься і почне приймати команди та повідомлення.
+
+⚙️ Команди
+Команда	Опис
+/start	Головне меню бота
+/random	Випадковий факт
+/gpt	GPT-чат
+/talk	Розмова з відомими особистостями
+/quiz	Квіз
+/recommend	Рекомендації фільми/книги/музика
+/translate	Перекладач тексту
+
+📝 Режими
+
+GPT – відповіді через OpenAI GPT API
+
+Talk – обираєте особистість, бот відповідає у її стилі
+
+Quiz – інтерактивний квіз
+
+Recommend – рекомендації за жанром
+
+Translate – переклад тексту на англійську, німецьку, українську
+
+⚠️ Примітки
+
+.env обов’язково має містити ключі Telegram та OpenAI.
+
+Не додавайте .env у публічні репозиторії.
+
+Рекомендовано запускати бот у віртуальному середовищі.
