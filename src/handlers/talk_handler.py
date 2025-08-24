@@ -1,22 +1,13 @@
+import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from src.openapi_client import OpenAiClient
-from src.utils import load_messages_for_bot, load_prompt
+from src.utils import load_messages_for_bot, get_image_path  # скоригуй шлях, якщо потрібно
 
-openai_client = OpenAiClient()
+logger = logging.getLogger(__name__)
 
-PERSONALITIES = {
-    "cobain": "talk_cobain",
-    "hawking": "talk_hawking",
-    "nietzsche": "talk_nietzsche",
-    "queen": "talk_queen",
-    "tolkien": "talk_tolkien"
-}
-
-async def talk_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Вибір особистості для спілкування"""
-    context.user_data['mode'] = 'talk_select'
+async def talk_with_personality(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = load_messages_for_bot("talk")
+    image_path = get_image_path("talk")
 
     keyboard = [
         [InlineKeyboardButton("Курт Кобейн", callback_data='talk_cobain')],
@@ -28,22 +19,26 @@ async def talk_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     target = update.message if update.message else update.callback_query.message
-    await target.reply_text(text, reply_markup=reply_markup)
 
-async def handle_talk_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Обробка повідомлень у talk-режимі"""
-    mode = context.user_data.get('mode', '')
-    if not mode.startswith('talk_') and mode != 'talk_select':
-        return
-
-    if mode.startswith('talk_'):
-        personality_key = mode.split('_')[1]
-        prompt_name = f"talk_{personality_key}"
-        user_text = update.message.text
-        try:
-            gpt_response = await openai_client.ask(user_text, load_prompt(prompt_name))
-            keyboard = [[InlineKeyboardButton("Головне меню", callback_data='start')]]
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await update.message.reply_text(gpt_response, reply_markup=reply_markup)
-        except Exception:
-            await update.message.reply_text("Сталася помилка. Спробуйте пізніше.")
+    try:
+        if image_path:
+            with open(image_path, 'rb') as photo:
+                await target.reply_photo(
+                    photo=photo,
+                    caption=text,
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
+        else:
+            await target.reply_text(
+                text,
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
+    except Exception as e:
+        logger.error(f"Error in talk_with_personality: {e}")
+        await target.reply_text(
+            text,
+            reply_markup=reply_markup,
+            parse_mode='Markdown'
+        )

@@ -1,20 +1,16 @@
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-from src.openapi_client import OpenAiClient
 from src.utils import load_messages_for_bot, load_prompt, get_image_path
+from src.openapi_client import OpenAiClient
 
-# Ініціалізація OpenAI клієнта
 openai_client = OpenAiClient()
+logger = logging.getLogger(__name__)
 
 
-async def random_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Інтерфейс випадкового факту.
-    Викликається при виборі відповідного пункту меню.
-    """
-    context.user_data['mode'] = 'random'
+async def random_fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = load_messages_for_bot("random")
+    prompt = load_prompt("random")
     image_path = get_image_path("random")
 
     keyboard = [
@@ -24,24 +20,23 @@ async def random_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     target = update.message if update.message else update.callback_query.message
+
     try:
-        gpt_response = await openai_client.ask("", load_prompt("random"))
+        gpt_response = await openai_client.ask("", prompt)
         if image_path:
             with open(image_path, 'rb') as photo:
-                await target.reply_photo(photo=photo, caption=f"{text}\n\n{gpt_response}", reply_markup=reply_markup)
+                await target.reply_photo(
+                    photo=photo,
+                    caption=f"{text}\n\n{gpt_response}",
+                    reply_markup=reply_markup,
+                    parse_mode='Markdown'
+                )
         else:
-            await target.reply_text(f"{text}\n\n{gpt_response}", reply_markup=reply_markup)
+            await target.reply_text(
+                f"{text}\n\n{gpt_response}",
+                reply_markup=reply_markup,
+                parse_mode='Markdown'
+            )
     except Exception as e:
-        logging.error(f"Error in Random handler: {e}")
-        await target.reply_text("⚠️ Сталася помилка. Спробуйте пізніше.")
-
-
-async def handle_random_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """
-    Обробка текстових повідомлень у режимі випадкових фактів.
-    Зазвичай користувач тут нічого не пише, але можна додати логіку.
-    """
-    mode = context.user_data.get('mode', '')
-    if mode != 'random':
-        return  # Не в режимі random
-    await random_interface(update, context)
+        logger.error(f"Error in random_fact: {e}")
+        await target.reply_text("Вибачте, сталася помилка. Спробуйте пізніше.")
