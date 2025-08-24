@@ -1,31 +1,41 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+import logging
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
-from src.openapi_client import OpenAiClient
+from src.utils import get_image_path
 
-openai_client = OpenAiClient()
+logger = logging.getLogger(__name__)
 
-async def translate_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data['mode'] = 'translate'
+# ---------------- TRANSLATE MENU ----------------
+async def translate_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Displays the translation menu and lets the user select a target language.
+
+    Shows buttons for English, German, and Ukrainian. Sets the user's mode to empty,
+    and provides an image if available. The menu allows the user to choose the language
+    for future translation requests.
+
+    Args:
+        update: Telegram update object containing the incoming message or callback
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     keyboard = [
         [InlineKeyboardButton("Англійська", callback_data='translate_en')],
         [InlineKeyboardButton("Німецька", callback_data='translate_de')],
-        [InlineKeyboardButton("Іспанська", callback_data='translate_es')],
         [InlineKeyboardButton("Українська", callback_data='translate_uk')],
         [InlineKeyboardButton("Головне меню", callback_data='start')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    context.user_data['mode'] = ''
     target = update.message if update.message else update.callback_query.message
-    await target.reply_text("Оберіть мову перекладу:", reply_markup=reply_markup)
 
-async def handle_translate_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.user_data.get('mode', '').startswith('translate'):
-        return
-    user_text = update.message.text
-    lang = context.user_data.get('mode').split('_')[1]
-    lang_map = {'en':'англійську','de':'німецьку','es':'іспанську','uk':'українську'}
-    prompt = f"Переклади на {lang_map[lang]}:\n{user_text}"
+
+    image_path = get_image_path("translate")
     try:
-        gpt_response = await openai_client.ask(prompt, "")
-        await update.message.reply_text(gpt_response)
-    except Exception:
-        await update.message.reply_text("Сталася помилка. Спробуйте пізніше.")
+        if image_path:
+            with open(image_path, 'rb') as photo:
+                await target.reply_photo(photo=photo, caption="Оберіть мову для перекладу:", reply_markup=reply_markup)
+        else:
+            await target.reply_text("Оберіть мову для перекладу:", reply_markup=reply_markup)
+    except Exception as e:
+        logger.error(f"Error in translate_menu: {e}")
+        await target.reply_text("Оберіть мову для перекладу:", reply_markup=reply_markup)
