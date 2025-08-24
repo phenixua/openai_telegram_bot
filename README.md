@@ -12,6 +12,7 @@
 
 ## 📂 Структура проекту
 
+```text
 openai_telegram_bot/
 ├── src/
 │ ├── bot.py
@@ -47,6 +48,7 @@ openai_telegram_bot/
 ├── pyproject.toml
 ├── poetry.lock
 └── README.md
+```
 
 
 ---
