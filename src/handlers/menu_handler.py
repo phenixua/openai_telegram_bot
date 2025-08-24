@@ -4,19 +4,22 @@ from telegram.ext import ContextTypes
 
 logger = logging.getLogger(__name__)
 
-
 async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Обробляє натискання кнопок меню"""
+    """
+    Handles menu button presses and sets the user's mode.
+
+    Args:
+        update (Update): Incoming update with the callback query.
+        context (ContextTypes.DEFAULT_TYPE): Context object to store user-specific data.
+    """
     query = update.callback_query
     await query.answer()
 
     choice = query.data
     logger.info(f"User selected: {choice}")
 
-    # Встановлюємо режим
     context.user_data['mode'] = choice
 
-    # В залежності від вибору
     if choice == "random":
         await query.message.reply_text("🧠 Генерую випадковий факт...")
     elif choice == "gpt":

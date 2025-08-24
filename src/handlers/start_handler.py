@@ -1,7 +1,6 @@
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
-
 from src.utils import get_image_path
 
 logging.basicConfig(level=logging.INFO)
@@ -9,7 +8,14 @@ logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
-    Показ головного меню. Логіка 1-в-1 з твого робочого коду.
+    Displays the main menu of the bot.
+
+    Provides quick access to all primary bot commands via inline buttons.
+    Shows an image if available and handles both messages and callback queries.
+
+    Args:
+        update: Telegram update object containing message or callback query
+        context: ContextTypes.DEFAULT_TYPE object for user session data
     """
     text_main = (
         "Привіт! Цей бот поєднує в собі зручність Telegram та потужність ChatGPT\n\n"

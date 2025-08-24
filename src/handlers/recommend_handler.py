@@ -7,6 +7,16 @@ logger = logging.getLogger(__name__)
 
 # ---------------- RECOMMEND ----------------
 async def recommend_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Displays the recommendation menu with options for movies, books, or music.
+
+    Shows an image if available and presents inline buttons for each category.
+    Handles the selection of a category via callback queries.
+
+    Args:
+        update: Telegram update object containing message or callback query
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     image_path = get_image_path("recommend")  # recommend.jpg
     keyboard = [
         [InlineKeyboardButton("Фільми", callback_data='recommend_movies')],

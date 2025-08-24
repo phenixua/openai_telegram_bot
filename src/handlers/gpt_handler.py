@@ -7,8 +7,14 @@ from src.openapi_client import OpenAiClient
 openai_client = OpenAiClient()
 logger = logging.getLogger(__name__)
 
-
 async def gpt_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Sends the GPT interface message with an optional image and sets the user's mode.
+
+    Args:
+        update (Update): Incoming update from Telegram.
+        context (ContextTypes.DEFAULT_TYPE): Context object for user data and bot interaction.
+    """
     text = load_messages_for_bot("gpt")
     image_path = get_image_path("gpt")
     context.user_data['mode'] = 'gpt'
@@ -34,6 +40,13 @@ async def gpt_interface(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def handle_gpt_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles user text messages in GPT mode and sends the AI-generated response.
+
+    Args:
+        update (Update): Incoming update containing the user's message.
+        context (ContextTypes.DEFAULT_TYPE): Context object for user data and bot interaction.
+    """
     user_text = update.message.text
     prompt = load_prompt("gpt")
     try:

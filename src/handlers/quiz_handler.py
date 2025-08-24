@@ -1,5 +1,5 @@
 import logging
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes
 from src.utils import load_messages_for_bot, load_prompt, get_image_path
 from src.openapi_client import OpenAiClient
@@ -9,6 +9,13 @@ logger = logging.getLogger(__name__)
 
 # ---------------- QUIZ GAME ----------------
 async def quiz_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Displays the quiz menu with available topics and optional image support.
+
+    Args:
+        update (Update): Incoming Telegram update.
+        context (ContextTypes.DEFAULT_TYPE): The context with user data.
+    """
     text = load_messages_for_bot("quiz")
     keyboard = [
         [InlineKeyboardButton("Історія", callback_data='quiz_history')],
@@ -20,7 +27,6 @@ async def quiz_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     target = update.message if update.message else update.callback_query.message
 
-    # ---------------- IMAGE SUPPORT ----------------
     image_path = get_image_path("quiz")
     try:
         if image_path:
@@ -34,12 +40,20 @@ async def quiz_game(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ---------------- HANDLE QUIZ CALLBACK ----------------
 async def handle_quiz_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, data: str):
+    """
+    Handles user's topic selection in the quiz menu and generates a quiz question.
+
+    Args:
+        update (Update): Incoming Telegram update.
+        context (ContextTypes.DEFAULT_TYPE): The context with user data.
+        data (str): Callback data from the selected topic button.
+    """
     if data == 'quiz_change_topic':
         await quiz_game(update, context)
         return
 
     topic = data.split('_')[1]
-    context.user_data['mode'] = f'quiz_{topic}'  # важливо для текстових відповідей
+    context.user_data['mode'] = f'quiz_{topic}'
     if 'score' not in context.user_data:
         context.user_data['score'] = 0
 
@@ -54,7 +68,6 @@ async def handle_quiz_callback(update: Update, context: ContextTypes.DEFAULT_TYP
         gpt_response = await openai_client.ask(topic_prompts[topic], load_prompt("quiz"))
         context.user_data['quiz_question'] = gpt_response
 
-        # Кнопки для відповіді
         keyboard = [
             [
                 InlineKeyboardButton("A", callback_data='quiz_answer_A'),
@@ -76,6 +89,14 @@ async def handle_quiz_callback(update: Update, context: ContextTypes.DEFAULT_TYP
 
 # ---------------- HANDLE QUIZ ANSWER ----------------
 async def handle_quiz_answer(update: Update, context: ContextTypes.DEFAULT_TYPE, answer: str):
+    """
+    Evaluates the user's answer to a quiz question using GPT and updates the score.
+
+    Args:
+        update (Update): Incoming Telegram update.
+        context (ContextTypes.DEFAULT_TYPE): The context with user data.
+        answer (str): User's answer (A, B, C, D).
+    """
     topic = context.user_data.get('mode', '').split('_')[1]
     score = context.user_data.get('score', 0)
 

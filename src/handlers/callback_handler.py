@@ -10,6 +10,17 @@ from src.handlers.talk_handler import talk_with_personality, handle_talk_callbac
 
 
 async def handle_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles all callback queries from inline buttons in the bot.
+
+    Depending on the callback data, this function routes the user
+    to the appropriate handler (start, random fact, GPT chat, talk,
+    quiz, recommendations, or translation).
+
+    Args:
+        update: Telegram update object containing callback query
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     query = update.callback_query
     await query.answer()
     data = query.data

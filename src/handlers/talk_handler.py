@@ -9,6 +9,16 @@ openai_client = OpenAiClient()
 
 # ---------------- TALK ----------------
 async def talk_with_personality(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Displays a menu of personalities the user can talk to.
+
+    Provides inline buttons for different personalities. Shows an image
+    if available and handles both messages and callback queries.
+
+    Args:
+        update: Telegram update object containing message or callback query
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     text = load_messages_for_bot("talk")
     image_path = get_image_path("talk")
 
@@ -35,6 +45,17 @@ async def talk_with_personality(update: Update, context: ContextTypes.DEFAULT_TY
 
 
 async def handle_talk_callback(update: Update, context: ContextTypes.DEFAULT_TYPE, data: str):
+    """
+    Handles callback queries when a personality is selected.
+
+    Sets the mode to the chosen personality, sends an image if available,
+    and provides a reply prompt to start the conversation.
+
+    Args:
+        update: Telegram update object containing callback query
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+        data: Callback data indicating the selected personality
+    """
     context.user_data['mode'] = data
     personality_map = {
         'talk_cobain': 'cobain',

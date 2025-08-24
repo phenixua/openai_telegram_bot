@@ -9,6 +9,17 @@ logger = logging.getLogger(__name__)
 
 
 async def random_fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles sending a random fact to the user.
+
+    The function fetches a random fact from resources and optionally
+    generates additional content via OpenAI GPT. It also displays an image
+    if available and provides inline keyboard buttons for navigation.
+
+    Args:
+        update (Update): The incoming Telegram update.
+        context (ContextTypes.DEFAULT_TYPE): The context containing user data.
+    """
     text = load_messages_for_bot("random")
     prompt = load_prompt("random")
     image_path = get_image_path("random")

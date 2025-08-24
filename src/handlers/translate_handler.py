@@ -7,6 +7,17 @@ logger = logging.getLogger(__name__)
 
 # ---------------- TRANSLATE MENU ----------------
 async def translate_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Displays the translation menu and lets the user select a target language.
+
+    Shows buttons for English, German, and Ukrainian. Sets the user's mode to empty,
+    and provides an image if available. The menu allows the user to choose the language
+    for future translation requests.
+
+    Args:
+        update: Telegram update object containing the incoming message or callback
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     keyboard = [
         [InlineKeyboardButton("Англійська", callback_data='translate_en')],
         [InlineKeyboardButton("Німецька", callback_data='translate_de')],
@@ -17,7 +28,7 @@ async def translate_menu(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data['mode'] = ''
     target = update.message if update.message else update.callback_query.message
 
-    # Додаємо картинку
+
     image_path = get_image_path("translate")
     try:
         if image_path:

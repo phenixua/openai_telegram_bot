@@ -10,6 +10,17 @@ openai_client = OpenAiClient()
 
 
 async def handle_text_messages(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles incoming text messages based on the user's current mode.
+
+    Depending on the user's mode stored in context.user_data['mode'], this function
+    routes the message to GPT chat, conversation with a personality, recommendations by genre,
+    translation mode, or shows a prompt to choose a bot mode.
+
+    Args:
+        update: Telegram update object containing the incoming message
+        context: ContextTypes.DEFAULT_TYPE object for user session data
+    """
     user_mode = context.user_data.get('mode', '')
     keyboard = [[InlineKeyboardButton("Головне меню", callback_data='start')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
