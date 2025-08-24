@@ -17,33 +17,33 @@
 
 openai_telegram_bot/
 ├── src/
-│   ├── bot.py
-│   ├── config.py
-│   ├── openapi_client.py
-│   ├── utils.py
-│   ├── .env.py
-│   ├── bot.log
-│   ├── handlers/
-│   │   ├── __init__.py
-│   │   ├── callback_handler.py
-│   │   ├── gpt_handler.py
-│   │   ├── menu_handler.py
-│   │   ├── quiz_handler.py
-│   │   ├── random_handler.py
-│   │   ├── recommend_handler.py
-│   │   ├── start_handler.py
-│   │   ├── talk_handler.py
-│   │   ├── text_handler.py
-│   │   └── translate_handler.py
-│   ├── logs/
-│   │   └── bot.log
-│   └── resources/
-│       ├── images/
-│       │   └── *.jpg
-│       ├── messages/
-│       │   └── *.txt
-│       └── prompts/
-│           └── *.txt
+│ ├── bot.py
+│ ├── config.py
+│ ├── openapi_client.py
+│ ├── utils.py
+│ ├── .env.py
+│ ├── bot.log
+│ ├── handlers/
+│ │ ├── init.py
+│ │ ├── callback_handler.py
+│ │ ├── gpt_handler.py
+│ │ ├── menu_handler.py
+│ │ ├── quiz_handler.py
+│ │ ├── random_handler.py
+│ │ ├── recommend_handler.py
+│ │ ├── start_handler.py
+│ │ ├── talk_handler.py
+│ │ ├── text_handler.py
+│ │ └── translate_handler.py
+│ ├── logs/
+│ │ └── bot.log
+│ └── resources/
+│ ├── images/
+│ │ └── *.jpg
+│ ├── messages/
+│ │ └── *.txt
+│ └── prompts/
+│ └── *.txt
 ├── .env
 ├── .env.example
 ├── .gitignore
